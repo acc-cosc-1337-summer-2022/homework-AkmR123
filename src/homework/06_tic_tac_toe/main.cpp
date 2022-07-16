@@ -1,15 +1,30 @@
 #include "tic_tac_toe.h"
+#include "tic_tac_toe_3.h"
+#include "tic_tac_toe_4.h"
 
 #include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
 using namespace std;
 
 int main() 
 {
-	TicTacToe game;
+	unique_ptr<TicTacToe> game;
 	string first_player;
 	char user_choice;
+	int size;
+
+	cout << "which size board would you like to play with? (3 or 4) " << endl;
+	cin >> size;
+	if (size == 3) 
+	{
+		game = make_unique<TicTacToe3>();
+	}
+	else if (size == 4)
+	{
+		game = make_unique<TicTacToe4>();
+	}
 
 	do
 	{
@@ -20,27 +35,39 @@ int main()
 		} while (first_player != "X" && first_player != "O");
 
 
-		game.start_game(first_player);
+		game->start_game(first_player);
 
 		int position;
 
-		while(!game.game_over())
+		while(!game->game_over())
 		{
-			do
+			if (size == 3)
 			{
-			cout << "Enter a position from 1 to 9: ";
-			cin >> position;
-			} while (position < 1 || position > 9);
-			game.mark_board(position);
-			game.display_board();
+				do
+				{
+				cout << "Enter a position from 1 to 9: ";
+				cin >> position;
+				} while (position < 1 || position > 9);
+			}
+			else if (size == 4)
+			{
+				do
+				{
+				cout << "Enter a position from 1 to 16: ";
+				cin >> position;
+				} while (position < 1 || position > 16);
+			}
+
+			game->mark_board(position);
+			game->display_board();
 
 		}
-		if (game.game_over() == true)
+		if (game->game_over() == true)
 		{
-			cout << "\nThe winner is " + game.get_winner() << endl;
+			cout << "\nThe winner is " + game->get_winner() << endl;
 		}
 
-		cout << "Play again (y\/n)? ";
+		cout << "Play again (y or n)? ";
 		cin >> user_choice;
 
 	} while (user_choice == 'y' || user_choice == 'Y');
